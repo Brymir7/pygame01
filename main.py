@@ -39,7 +39,7 @@ def draw_window(yellow, red, yellow_bullets, red_bullets, powerup):
     for bullet in yellow_bullets:
         pygame.draw.rect(WIN, YELLOW, bullet)
     for powerup1 in powerup:
-        pygame.draw.rect(WIN, YELLOW, powerup1)
+        pygame.draw.rect(WIN, BLACK, powerup1)
     pygame.display.update()
     
 def yellow_handle_movement(keys_pressed, yellow, powerup):
@@ -54,7 +54,7 @@ def yellow_handle_movement(keys_pressed, yellow, powerup):
     if yellow.colliderect(powerup):
             pygame.event.post(pygame.event.Event(YELLOW_POWERUP))
               
-def red_handle_movement(keys_pressed, red):
+def red_handle_movement(keys_pressed, red, powerup):
     if keys_pressed[pygame.K_LEFT] and red.x - VELOCITY - SPACESHIP_WIDTH // 2 > BORDER.x - 5: 
             red.x -= VELOCITY  
     if keys_pressed[pygame.K_RIGHT] and red.x + VELOCITY + SPACESHIP_WIDTH // 2 < WIDTH - 15: 
@@ -63,6 +63,9 @@ def red_handle_movement(keys_pressed, red):
             red.y -= VELOCITY 
     if keys_pressed[pygame.K_DOWN] and red.y + VELOCITY + SPACESHIP_HEIGHT < HEIGHT - 15: 
             red.y += VELOCITY
+    if red.colliderect(powerup):
+            pygame.event.post(pygame.event.Event(RED_POWERUP))
+              
 def handle_bullets(yellow_bullets, red_bullets, yellow, red):
     for bullet in yellow_bullets:
         bullet.x += BULLET_VEL
@@ -78,8 +81,9 @@ def handle_bullets(yellow_bullets, red_bullets, yellow, red):
             red_bullets.remove(bullet)
         if bullet.x < 0:  
             red_bullets.remove(bullet)
-def handle_powerups(powerup, powerup1):
+def handle_powerups(powerup, powerup1, powerup2):
     powerup.append(powerup1)
+    powerup.append(powerup2)
          
 def main():
     yellow = pygame.Rect(100, 200, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
@@ -94,6 +98,7 @@ def main():
     yellow_health = 10
     red_health = 10
     powerup1 = pygame.Rect(random_value_yellow, random_value_height, 30, 30)
+    powerup2 = pygame.Rect(random_value_red, random_value_height, 30, 30)
     yellow_bullets = []
     red_bullets = []
     clock = pygame.time.Clock()
@@ -112,11 +117,11 @@ def main():
                     bullet = pygame.Rect(red.x, red.y + red.height//2 - 2, 10, 5)
                     red_bullets.append(bullet)
             if event.type == YELLOW_POWERUP:
-                max_bullets_upgrade_yellow =  max_bullets_upgrade_yellow + delta_time*0.25 *1
+                max_bullets_upgrade_yellow =  max_bullets_upgrade_yellow + delta_time*0.25
                 powerup.clear()
                 
             if event.type == RED_POWERUP:
-                max_bullets_upgrade_red = max_bullets_upgrade_red + delta_time*1
+                max_bullets_upgrade_red = max_bullets_upgrade_red + delta_time*0.25
                 powerup.clear()
             if event.type == YELLOW_HIT:
                 yellow_health -= 1
@@ -128,11 +133,11 @@ def main():
             print("Game over")
             run = False             
         if power == 0:
-            handle_powerups(powerup, powerup1)
+            handle_powerups(powerup, powerup1, powerup2)
             power = power+1 
         keys_pressed = pygame.key.get_pressed()    
         yellow_handle_movement(keys_pressed, yellow, powerup1)
-        red_handle_movement(keys_pressed, red)  
+        red_handle_movement(keys_pressed, red, powerup2)  
         handle_bullets(yellow_bullets, red_bullets, yellow, red)               
         draw_window(yellow, red, yellow_bullets, red_bullets, powerup)
         
