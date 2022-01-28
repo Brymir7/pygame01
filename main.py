@@ -1,7 +1,7 @@
 import pygame
 import os
 import random
-from threading import Timer
+import time
 WIDTH, HEIGHT = 900, 500
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("Game01")
@@ -90,9 +90,9 @@ def main():
     red = pygame.Rect(700, 200, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
     max_bullets_upgrade_red = 0
     max_bullets_upgrade_yellow = 0
-    random_value_yellow = random.uniform(50, 430)
-    random_value_red = random.uniform(430, 850)
-    random_value_height = random.uniform(50, 500)
+    random_value_yellow = random.uniform(80, 400)
+    random_value_red = random.uniform(500, 820)
+    random_value_height = random.uniform(100, 400)
     powerup = []
     power = 0
     yellow_health = 10
@@ -119,7 +119,6 @@ def main():
             if event.type == YELLOW_POWERUP:
                 max_bullets_upgrade_yellow =  max_bullets_upgrade_yellow + delta_time*0.25
                 powerup.clear()
-                
             if event.type == RED_POWERUP:
                 max_bullets_upgrade_red = max_bullets_upgrade_red + delta_time*0.25
                 powerup.clear()
@@ -134,7 +133,7 @@ def main():
             run = False             
         if power == 0:
             handle_powerups(powerup, powerup1, powerup2)
-            power = power+1 
+            power = power+1      
         keys_pressed = pygame.key.get_pressed()    
         yellow_handle_movement(keys_pressed, yellow, powerup1)
         red_handle_movement(keys_pressed, red, powerup2)  
